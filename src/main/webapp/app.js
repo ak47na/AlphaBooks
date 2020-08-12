@@ -32,48 +32,29 @@ function getUiConfig() {
               authResult.additionalUserInfo.isNewUser ?
               'New User' : 'Existing User';
         }
-        // Do not redirect.
-        return false;
+        
+        return true;
       }
     },
     // Opens IDP Providers sign-in flow in a popup.
     'signInFlow': 'popup',
+    'signInSuccessUrl' : '/loggedIn.html',
     'signInOptions': [
-      // TODO(developer): Remove the providers you don't need for your app.
       {
         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         // Required to enable ID token credentials for this provider.
         clientId: CLIENT_ID
       },
       {
-        provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        scopes :[
-          'public_profile',
-          'email',
-          'user_likes',
-          'user_friends'
-        ]
-      },
-      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-      firebase.auth.GithubAuthProvider.PROVIDER_ID,
-      {
         provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
         // Whether the display name should be displayed in Sign Up page.
         requireDisplayName: true,
-        signInMethod: getEmailSignInMethod()
       },
       {
         provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
         recaptchaParameters: {
           size: getRecaptchaMode()
         }
-      },
-      {
-        provider: 'microsoft.com',
-        loginHintKey: 'login_hint'
-      },
-      {
-        provider: 'apple.com',
       },
       firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
     ],
@@ -97,8 +78,7 @@ ui.disableAutoSignIn();
  * @return {string} The URL of the FirebaseUI standalone widget.
  */
 function getWidgetUrl() {
-  return '/widget#recaptcha=' + getRecaptchaMode() + '&emailSignInMethod=' +
-      getEmailSignInMethod();
+  return '/widget#recaptcha=' + getRecaptchaMode();
 }
 
 
@@ -183,16 +163,13 @@ var deleteAccount = function() {
 
 
 /**
- * Handles when the user changes the reCAPTCHA or email signInMethod config.
+ * Handles when the user changes the reCAPTCHA.
  */
 function handleConfigChange() {
   var newRecaptchaValue = document.querySelector(
       'input[name="recaptcha"]:checked').value;
-  var newEmailSignInMethodValue = document.querySelector(
-      'input[name="emailSignInMethod"]:checked').value;
   location.replace(
-      location.pathname + '#recaptcha=' + newRecaptchaValue +
-      '&emailSignInMethod=' + newEmailSignInMethodValue);
+      location.pathname + '#recaptcha=' + newRecaptchaValue);
 
   // Reset the inline widget so the config changes are reflected.
   ui.reset();
@@ -204,10 +181,6 @@ function handleConfigChange() {
  * Initializes the app.
  */
 var initApp = function() {
-  document.getElementById('sign-in-with-redirect').addEventListener(
-      'click', signInWithRedirect);
-  document.getElementById('sign-in-with-popup').addEventListener(
-      'click', signInWithPopup);
   document.getElementById('sign-out').addEventListener('click', function() {
     firebase.auth().signOut();
   });
@@ -223,15 +196,6 @@ var initApp = function() {
   // Check the selected reCAPTCHA mode.
   document.querySelector(
       'input[name="recaptcha"][value="' + getRecaptchaMode() + '"]')
-      .checked = true;
-
-  document.getElementById('email-signInMethod-password').addEventListener(
-      'change', handleConfigChange);
-  document.getElementById('email-signInMethod-emailLink').addEventListener(
-      'change', handleConfigChange);
-  // Check the selected email signInMethod mode.
-  document.querySelector(
-      'input[name="emailSignInMethod"][value="' + getEmailSignInMethod() + '"]')
       .checked = true;
 };
 

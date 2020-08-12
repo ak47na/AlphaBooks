@@ -10,8 +10,8 @@
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
     
     <script src="common.js"></script>
-    <script src="dist/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="dist/firebaseui.css" />
+    <!-- <script src="dist/firebaseui.js"></script> -->
+    <!-- <link type="text/css" rel="stylesheet" href="dist/firebaseui.css" /> -->
     <style>
       body {
         margin: 0;
@@ -22,14 +22,14 @@
       // FirebaseUI config.
       var uiConfig = {
         // Url to redirect to after a successful sign-in.
-        'signInSuccessUrl': '/',
+        'signInSuccessUrl': '/loggedIn.html',
         'callbacks': {
           'signInSuccess': function(user, credential, redirectUrl) {
             if (window.opener) {
               // The widget has been opened in a popup, so close the window
-              // and return false to not redirect the opener.
+              // and return true to redirect to signInSuccessUrl.
               window.close();
-              return false;
+              return true;
             } else {
               // The widget has been used in redirect mode, so we redirect to the signInSuccessUrl.
               return true;
@@ -37,15 +37,12 @@
           }
         },
         'signInOptions': [
-          // TODO(developer): Remove the providers you don't need for your app.
+          // We will only use Google, phone and email sign in
           {
             provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
             // Required to enable ID token credentials for this provider.
             clientId: CLIENT_ID
           },
-          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-          firebase.auth.GithubAuthProvider.PROVIDER_ID,
           {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
             signInMethod: getEmailSignInMethod()
@@ -55,14 +52,7 @@
             recaptchaParameters: {
               size: getRecaptchaMode()
             }
-          },
-          {
-            provider: 'microsoft.com',
-            loginHintKey: 'login_hint'
-          },
-          {
-            provider: 'apple.com',
-          },
+          }
           firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
         ],
         // Terms of service url.
