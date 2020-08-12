@@ -13,15 +13,17 @@
  */
 
 /**
+ * FirebaseUI initialization to be used in a Single Page application context.
+ */
+
+/**
  * @return {!Object} The FirebaseUI config.
  */
-function getUIConfig() {
-  var uiConfig = {
-    callbacks: {
-      signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        // User successfully signed in.
-        // Return type determines whether we continue the redirect automatically
-        // or whether we leave that to developer to handle.
+function getUiConfig() {
+  return {
+    'callbacks': {
+      // Called when the user has been successfully signed in.
+      'signInSuccessWithAuthResult': function(authResult, redirectUrl) {
         if (authResult.user) {
           handleSignedInUser(authResult.user);
         }
@@ -30,27 +32,58 @@ function getUIConfig() {
               authResult.additionalUserInfo.isNewUser ?
               'New User' : 'Existing User';
         }
-        return true;
-      },
-      uiShown: function() {
-        // The widget is rendered.
-        // Hide the loader.
-        document.getElementById('loader').style.display = 'none';
+        // Do not redirect.
+        return false;
       }
     },
-    // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-    signInFlow: 'popup',
-    signInSuccessUrl: '<url-to-redirect-to-on-success>',
-    signInOptions: [
-    //the sign-in providers you offered for users.
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    // Opens IDP Providers sign-in flow in a popup.
+    'signInFlow': 'popup',
+    'signInOptions': [
+      // TODO(developer): Remove the providers you don't need for your app.
+      {
+        provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        // Required to enable ID token credentials for this provider.
+        clientId: CLIENT_ID
+      },
+      {
+        provider: firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+        scopes :[
+          'public_profile',
+          'email',
+          'user_likes',
+          'user_friends'
+        ]
+      },
+      firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+      firebase.auth.GithubAuthProvider.PROVIDER_ID,
+      {
+        provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        // Whether the display name should be displayed in Sign Up page.
+        requireDisplayName: true,
+        signInMethod: getEmailSignInMethod()
+      },
+      {
+        provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+        recaptchaParameters: {
+          size: getRecaptchaMode()
+        }
+      },
+      {
+        provider: 'microsoft.com',
+        loginHintKey: 'login_hint'
+      },
+      {
+        provider: 'apple.com',
+      },
+      firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
     ],
     // Terms of service url.
-    tosUrl: '<your-tos-url>',
+    'tosUrl': 'https://www.google.com',
     // Privacy policy url.
-    privacyPolicyUrl: '<your-privacy-policy-url>'
+    'privacyPolicyUrl': 'https://www.google.com',
+    'credentialHelper': CLIENT_ID && CLIENT_ID != 'YOUR_OAUTH_CLIENT_ID' ?
+        firebaseui.auth.CredentialHelper.GOOGLE_YOLO :
+        firebaseui.auth.CredentialHelper.NONE
   };
 }
 
@@ -58,6 +91,7 @@ function getUIConfig() {
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 // Disable auto-sign in.
 ui.disableAutoSignIn();
+
 
 /**
  * @return {string} The URL of the FirebaseUI standalone widget.
@@ -67,6 +101,7 @@ function getWidgetUrl() {
       getEmailSignInMethod();
 }
 
+
 /**
  * Redirects to the FirebaseUI widget.
  */
@@ -74,12 +109,14 @@ var signInWithRedirect = function() {
   window.location.assign(getWidgetUrl());
 };
 
+
 /**
  * Open a popup with the FirebaseUI widget.
  */
 var signInWithPopup = function() {
   window.open(getWidgetUrl(), 'Sign In', 'width=985,height=735');
 };
+
 
 /**
  * Displays the UI for a signed in user.
@@ -90,7 +127,24 @@ var handleSignedInUser = function(user) {
   document.getElementById('user-signed-out').style.display = 'none';
   document.getElementById('name').textContent = user.displayName;
   document.getElementById('email').textContent = user.email;
+  document.getElementById('phone').textContent = user.phoneNumber;
+  if (user.photoURL) {
+    var photoURL = user.photoURL;
+    // Append size to the photo URL for Google hosted images to avoid requesting
+    // the image with its original resolution (using more bandwidth than needed)
+    // when it is going to be presented in smaller size.
+    if ((photoURL.indexOf('googleusercontent.com') != -1) ||
+        (photoURL.indexOf('ggpht.com') != -1)) {
+      photoURL = photoURL + '?sz=' +
+          document.getElementById('photo').clientHeight;
+    }
+    document.getElementById('photo').src = photoURL;
+    document.getElementById('photo').style.display = 'block';
+  } else {
+    document.getElementById('photo').style.display = 'none';
+  }
 };
+
 
 /**
  * Displays the UI for a signed out user.
@@ -98,7 +152,7 @@ var handleSignedInUser = function(user) {
 var handleSignedOutUser = function() {
   document.getElementById('user-signed-in').style.display = 'none';
   document.getElementById('user-signed-out').style.display = 'block';
-  ui.start('#firebaseui-container', getUIConfig());
+  ui.start('#firebaseui-container', getUiConfig());
 };
 
 // Listen to change in auth state so it displays the correct UI for when
@@ -108,6 +162,25 @@ firebase.auth().onAuthStateChanged(function(user) {
   document.getElementById('loaded').style.display = 'block';
   user ? handleSignedInUser(user) : handleSignedOutUser();
 });
+
+/**
+ * Deletes the user's account.
+ */
+var deleteAccount = function() {
+  firebase.auth().currentUser.delete().catch(function(error) {
+    if (error.code == 'auth/requires-recent-login') {
+      // The user's credential is too old. She needs to sign in again.
+      firebase.auth().signOut().then(function() {
+        // The timeout allows the message to be displayed after the UI has
+        // changed to the signed out state.
+        setTimeout(function() {
+          alert('Please sign in again to delete your account.');
+        }, 1);
+      });
+    }
+  });
+};
+
 
 /**
  * Handles when the user changes the reCAPTCHA or email signInMethod config.
@@ -123,8 +196,9 @@ function handleConfigChange() {
 
   // Reset the inline widget so the config changes are reflected.
   ui.reset();
-  ui.start('#firebaseui-container', getUIConfig());
+  ui.start('#firebaseui-container', getUiConfig());
 }
+
 
 /**
  * Initializes the app.
@@ -137,6 +211,10 @@ var initApp = function() {
   document.getElementById('sign-out').addEventListener('click', function() {
     firebase.auth().signOut();
   });
+  document.getElementById('delete-account').addEventListener(
+      'click', function() {
+        deleteAccount();
+      });
 
   document.getElementById('recaptcha-normal').addEventListener(
       'change', handleConfigChange);

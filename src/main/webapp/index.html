@@ -4,47 +4,37 @@
     <meta charset="UTF-8">
     <title>FirebaseUI Auth Demo</title>
     <link rel="manifest" href="manifest.json">
+    <script src="https://www.gstatic.com/firebasejs/7.4.0/firebase.js"></script>
+    <script src="config.js"></script>
+    <!-- Initialize firebase using CDN -->
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
     <script src="common.js"></script>
-    
-    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" /> 
-      
+    <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+    <script src="dist/firebaseui.js"></script>
+    <link type="text/css" rel="stylesheet" href="dist/firebaseui.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
     <div id="container">
       <h3>FirebaseUI Demo</h3>
       <div id="loading">Loading...</div>
       <div id="loaded" class="hidden">
-      <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
-
-      <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-      <script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
-
-      <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
-      <script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js"></script>
-
-      <!-- Add Firebase products that you want to use -->
-      <script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-firestore.js"></script>
-      <!-- Previously loaded Firebase SDKs -->
-      <!-- Initialize firebase -->
-      <script src="config.js"></script>
-
         <div id="main">
           <div id="user-signed-in" class="hidden">
             <div id="user-info">
-              <!-- <div id="photo-container">
-                <img id="photo"> -->
+              <div id="photo-container">
+                <img id="photo">
               </div>
               <div id="name"></div>
               <div id="email"></div>
-              <!-- <div id="phone"></div> -->
+              <div id="phone"></div>
               <div id="is-new-user"></div>
-              <!-- <div class="clearfix"></div> -->
+              <div class="clearfix"></div>
             </div>
             <p>
               <button id="sign-out">Sign Out</button>
-              <!-- <button id="delete-account">Delete account</button> -->
+              <button id="delete-account">Delete account</button>
             </p>
           </div>
           <div id="user-signed-out" class="hidden">
@@ -84,6 +74,6 @@
         </div>
       </div>
     </div>
-    <script src="authenticationScript.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>

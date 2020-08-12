@@ -12,10 +12,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"
-
-// src="https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js"
+ 
 
   // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -31,3 +28,4 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
+  var CLIENT_ID = null;

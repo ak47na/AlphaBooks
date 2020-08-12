@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
@@ -35,12 +35,11 @@ function getEmailSignInMethod() {
       'password' : 'emailLink';
 }
 
+
 /**
  * @param {string} queryString The full query string.
  * @return {!Object<string, string>} The parsed query parameters.
  */
-
-// this function will be removed and the query string will be parsed in a Java servlet
 function parseQueryString(queryString) {
   // Remove first character if it is ? or #.
   if (queryString.length &&
