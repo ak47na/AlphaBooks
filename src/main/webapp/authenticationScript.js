@@ -98,7 +98,7 @@ var handleSignedInUser = function(user) {
 var handleSignedOutUser = function() {
   document.getElementById('user-signed-in').style.display = 'none';
   document.getElementById('user-signed-out').style.display = 'block';
-  ui.start('#firebaseui-container', getUiConfig());
+  ui.start('#firebaseui-container', getUIConfig());
 };
 
 // Listen to change in auth state so it displays the correct UI for when
@@ -123,7 +123,7 @@ function handleConfigChange() {
 
   // Reset the inline widget so the config changes are reflected.
   ui.reset();
-  ui.start('#firebaseui-container', getUiConfig());
+  ui.start('#firebaseui-container', getUIConfig());
 }
 
 /**

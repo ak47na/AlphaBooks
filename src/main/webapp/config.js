@@ -1,3 +1,4 @@
+ 
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -12,9 +13,9 @@
  * limitations under the License.
  */
 
-src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"
+// src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"
 
-src="https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js"
+// src="https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js"
 
   // Your web app's Firebase configuration
   var firebaseConfig = {
