@@ -1,4 +1,3 @@
- 
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -13,21 +12,21 @@
  * limitations under the License.
  */
 
-// Your web app's Firebase configuration
-    var firebaseConfig = {
-      apiKey: "AIzaSyBaqlLYgCHBS8SAXllzPfRuCLoRVO_IrxI",
-      authDomain: "com-alphabooks-step-2020.firebaseapp.com",
-      databaseURL: "https://com-alphabooks-step-2020.firebaseio.com",
-      projectId: "google.com:alphabooks-step-2020",
-      storageBucket: "undefined",
-      messagingSenderId: "41470712328",
-      appId: "1:41470712328:web:d068898015644da81d8fbd",
-      measurementId: "G-ZN6YQE227D"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
+src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"
 
-// Google OAuth Client ID, needed to support One-tap sign-up.
-// Set to null if One-tap sign-up is not supported.
-var CLIENT_ID = null;
+src="https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js"
+
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyBaqlLYgCHBS8SAXllzPfRuCLoRVO_IrxI",
+    authDomain: "com-alphabooks-step-2020.firebaseapp.com",
+    databaseURL: "https://com-alphabooks-step-2020.firebaseio.com",
+    projectId: "google.com:alphabooks-step-2020",
+    storageBucket: "undefined",
+    messagingSenderId: "41470712328",
+    appId: "1:41470712328:web:d068898015644da81d8fbd",
+    measurementId: "G-ZN6YQE227D"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
